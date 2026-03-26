@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>디지털 문화 인식 개선 게임</title>
+    <style>
+      :root {
+        --bg1: #f6fbff;
+        --bg2: #fbfff6;
+        --panel: rgba(20, 30, 55, 0.06);
+        --panel2: rgba(20, 30, 55, 0.085);
+        --text: #0b1020;
+        --muted: rgba(11, 16, 32, 0.65);
+        --accent: #3b82f6;
+        --danger: #ef4444;
+        --ok: #22c55e;
+        --shadow: rgba(0, 0, 0, 0.12);
+        --radius: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo",
+          "Malgun Gothic", Arial, sans-serif;
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 18px;
+        background: radial-gradient(1200px 520px at 18% 0%, rgba(59, 130, 246, 0.18), transparent 60%),
+          radial-gradient(1000px 460px at 90% 10%, rgba(34, 197, 94, 0.14), transparent 62%),
+          linear-gradient(180deg, var(--bg1), var(--bg2));
+      }
+
+      .wrap {
+        width: min(1040px, 100%);
+        display: grid;
+        gap: 12px;
+      }
+
+      header {
+        display: grid;
+        gap: 8px;
+        padding: 12px 14px;
+        border-radius: var(--radius);
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(6px);
+        box-shadow: 0 16px 40px var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+      }
+
+      header .topRow {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 16px;
+        letter-spacing: -0.02em;
+      }
+
+      .desc {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .meta {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        font-size: 12px;
+        color: rgba(11, 16, 32, 0.75);
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        padding: 6px 10px;
+        border-radius: 999px;
+        user-select: none;
+      }
+
+      .btn {
+        appearance: none;
+        border: 0;
+        background: linear-gradient(180deg, rgba(59, 130, 246, 1), rgba(37, 99, 235, 1));
+        color: white;
+        padding: 9px 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        box-shadow: 0 12px 26px rgba(37, 99, 235, 0.28);
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn.secondary {
+        background: rgba(255, 255, 255, 0.7);
+        color: rgba(11, 16, 32, 0.9);
+        border: 1px solid rgba(11, 16, 32, 0.12);
+        box-shadow: none;
+      }
+
+      .stageShell {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        border-radius: var(--radius);
+        box-shadow: 0 16px 40px var(--shadow);
+        overflow: hidden;
+      }
+
+      .stageHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(11, 16, 32, 0.08);
+        background: rgba(255, 255, 255, 0.65);
+      }
+
+      .stageTitle {
+        display: grid;
+        gap: 2px;
+      }
+
+      .stageTitle strong {
+        font-size: 14px;
+      }
+
+      .stageTitle span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .stageBody {
+        padding: 14px;
+      }
+
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: rgba(11, 16, 32, 0.03);
+        border: 1px solid rgba(11, 16, 32, 0.06);
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .barRow {
+        display: grid;
+        gap: 8px;
+      }
+
+      .barLabel {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .barLabel b {
+        font-size: 12px;
+        letter-spacing: -0.01em;
+      }
+
+      .barLabel small {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .bar {
+        height: 16px;
+        background: rgba(11, 16, 32, 0.08);
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .fill {
+        height: 100%;
+        width: 50%;
+        border-radius: 999px;
+        transition: width 120ms linear;
+      }
+
+      .fill.blue {
+        background: linear-gradient(90deg, rgba(59, 130, 246, 1), rgba(99, 102, 241, 1));
+      }
+      .fill.red {
+        background: linear-gradient(90deg, rgba(239, 68, 68, 1), rgba(244, 63, 94, 1));
+      }
+
+      .arena {
+        position: relative;
+        min-height: 420px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(11, 16, 32, 0.08);
+        background: radial-gradient(900px 320px at 50% 0%, rgba(99, 102, 241, 0.18), transparent 65%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.65));
+      }
+
+      .arena::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          90deg,
+          rgba(11, 16, 32, 0.03),
+          rgba(11, 16, 32, 0.03) 2px,
+          transparent 2px,
+          transparent 18px
+        );
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      .floor {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 120px;
+        background: linear-gradient(180deg, rgba(11, 16, 32, 0.02), rgba(11, 16, 32, 0.1));
+        z-index: 1;
+      }
+
+      .ring {
+        position: absolute;
+        left: 50%;
+        top: 58%;
+        transform: translate(-50%, -50%);
+        width: min(760px, 92%);
+        height: 220px;
+        border-radius: 999px;
+        border: 2px dashed rgba(11, 16, 32, 0.12);
+        opacity: 0.6;
+        z-index: 0;
+      }
+
+      .fighter {
+        position: absolute;
+        bottom: 48px;
+        width: 320px;
+        height: 320px;
+        user-select: none;
+        -webkit-user-drag: none;
+        cursor: pointer;
+        filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.18));
+        touch-action: manipulation;
+        z-index: 3;
+      }
+
+      .fighter:active {
+        transform: translateY(1px) scale(0.995);
+      }
+
+      .fighter.laptop {
+        left: 6%;
+      }
+      .fighter.paper {
+        right: 6%;
+      }
+
+      /* 노트북(나)만 더 크게 */
+      .fighter.laptop.fighterImg {
+        width: 380px;
+        height: 380px;
+        bottom: 30px;
+      }
+
+      .vsBig {
+        position: absolute;
+        left: 50%;
+        top: 55%;
+        transform: translate(-50%, -50%);
+        font-weight: 900;
+        font-size: clamp(44px, 7vw, 86px);
+        letter-spacing: -0.04em;
+        color: rgba(11, 16, 32, 0.26);
+        text-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        user-select: none;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .tugHud {
+        display: grid;
+        gap: 10px;
+      }
+
+      .tugBar {
+        position: relative;
+        height: 18px;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid rgba(11, 16, 32, 0.12);
+        background: rgba(11, 16, 32, 0.08);
+      }
+
+      .tugFill {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+      }
+      .tugFill.left {
+        left: 0;
+        background: linear-gradient(90deg, rgba(239, 68, 68, 1), rgba(244, 63, 94, 1));
+      }
+      .tugFill.right {
+        right: 0;
+        background: linear-gradient(90deg, rgba(59, 130, 246, 1), rgba(99, 102, 241, 1));
+      }
+
+      .tugMid {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.75);
+        box-shadow: 0 0 0 1px rgba(11, 16, 32, 0.18);
+        pointer-events: none;
+      }
+
+      .tugMarker {
+        position: absolute;
+        top: -6px;
+        width: 10px;
+        height: 30px;
+        border-radius: 8px;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 16px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(11, 16, 32, 0.18);
+        pointer-events: none;
+      }
+
+      .fighterImg {
+        background: none;
+        border-radius: 18px;
+      }
+      .fighterSvg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .hitFx {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 120ms ease;
+      }
+      .hitFx.on {
+        opacity: 1;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        width: min(940px, calc(100% - 28px));
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(11, 16, 32, 0.14);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+        display: none;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 60;
+      }
+      .toast.show {
+        display: flex;
+      }
+
+      .modalDim {
+        position: fixed;
+        inset: 0;
+        background: rgba(11, 16, 32, 0.55);
+        backdrop-filter: blur(4px);
+        display: none;
+        z-index: 59;
+      }
+      .modalDim.show {
+        display: block;
+      }
+
+      .toast.modal {
+        left: 50%;
+        top: 50%;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        border-radius: 18px;
+        padding: 18px 18px;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: rgba(255, 255, 255, 0.96);
+      }
+      .toast.modal b {
+        font-size: 24px;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+      }
+      .toast.modal span {
+        font-size: 18px;
+        font-weight: 800;
+        color: #0b1020;
+        line-height: 1.45;
+      }
+      .toast b {
+        font-size: 13px;
+      }
+      .toast span {
+        font-size: 13px;
+        color: rgba(11, 16, 32, 0.78);
+        line-height: 1.35;
+      }
+
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+          monospace;
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 8px;
+        background: rgba(11, 16, 32, 0.06);
+        border: 1px solid rgba(11, 16, 32, 0.12);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* Stage 2 */
+      .canvasWrap {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(11, 16, 32, 0.08);
+        background: #dff6ff;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .hud2 {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="topRow">
+          <h1>롯데건설의 디지털 문화를 위하여 게임을 클리어해주세요!</h1>
+          <div class="meta">
+            <span class="pill" id="pillStage">스테이지 1</span>
+            <button class="btn secondary" id="btnRestart" type="button">처음부터</button>
+          </div>
+        </div>
+        <!-- 설명 문단 제거 -->
+      </header>
+
+      <!-- Stage 1 -->
+      <section class="stageShell" id="stage1">
+        <div class="stageHeader">
+          <div class="stageTitle">
+            <strong>스테이지 1 · 노트북 vs 종이</strong>
+            <span>캐릭터를 직접 클릭해서 이기세요.</span>
+          </div>
+          <div class="meta">
+            <span class="pill">제한시간 <b id="s1Time">—</b>s</span>
+            <button class="btn" id="btnS1Start" type="button">시작</button>
+          </div>
+        </div>
+        <div class="stageBody">
+          <div class="tugHud">
+            <div class="panel">
+              <div class="barLabel">
+                <b>게이지 밀기</b>
+                <small>목표: 게이지가 상대편 끝까지 도달하면 승리</small>
+              </div>
+              <div class="tugBar" aria-label="줄다리기 게이지">
+                <div class="tugFill left" id="tugLeft"></div>
+                <div class="tugFill right" id="tugRight"></div>
+                <div class="tugMid"></div>
+                <div class="tugMarker" id="tugMarker" style="left: 50%"></div>
+              </div>
+              <div class="hud2">
+                <div class="hint">팁: <b>노트북</b>을 연속 클릭하면 게이지가 오른쪽(승리 방향)으로 이동합니다.</div>
+                <div class="hint">상대도 계속 밀어옵니다.</div>
+              </div>
+            </div>
+
+            <div class="arena" aria-label="대전 화면">
+              <div class="ring"></div>
+              <div class="floor"></div>
+
+              <div class="vsBig" aria-hidden="true">VS</div>
+
+              <!-- Laptop (player) -->
+              <div class="fighter laptop fighterImg" id="laptopChar" role="img" aria-label="노트북(나)">
+                <svg class="fighterSvg" viewBox="0 0 320 320" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="lapBody" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0" stop-color="#e5e7eb" />
+                      <stop offset="1" stop-color="#9aa3b2" />
+                    </linearGradient>
+                    <linearGradient id="lapScreen" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0" stop-color="#f8fafc" />
+                      <stop offset="1" stop-color="#dbeafe" />
+                    </linearGradient>
+                  </defs>
+                  <ellipse cx="160" cy="300" rx="76" ry="10" fill="rgba(0,0,0,0.22)" />
+
+                  <!-- display lid + bezel -->
+                  <rect x="64" y="46" width="192" height="140" rx="16" fill="#4b5563" />
+                  <rect x="70" y="52" width="180" height="128" rx="12" fill="#0f172a" />
+                  <rect x="79" y="61" width="162" height="110" rx="10" fill="url(#lapScreen)" />
+                  <circle cx="160" cy="56" r="2.1" fill="#9ca3af" />
+                  <rect x="146" y="177" width="28" height="5" rx="2.5" fill="#374151" opacity="0.7" />
+
+                  <!-- keyboard deck -->
+                  <path d="M50 184h220c12 0 22 10 22 22v26c0 12-10 22-22 22H50c-12 0-22-10-22-22v-26c0-12 10-22 22-22z" fill="url(#lapBody)" />
+                  <rect x="70" y="198" width="180" height="30" rx="6" fill="#6b7280" opacity="0.25" />
+                  <!-- keys -->
+                  <g fill="#1f2937" opacity="0.85">
+                    <rect x="80" y="202" width="14" height="7" rx="2" />
+                    <rect x="98" y="202" width="14" height="7" rx="2" />
+                    <rect x="116" y="202" width="14" height="7" rx="2" />
+                    <rect x="134" y="202" width="14" height="7" rx="2" />
+                    <rect x="152" y="202" width="14" height="7" rx="2" />
+                    <rect x="170" y="202" width="14" height="7" rx="2" />
+                    <rect x="188" y="202" width="14" height="7" rx="2" />
+                    <rect x="206" y="202" width="14" height="7" rx="2" />
+
+                    <rect x="84" y="212" width="14" height="7" rx="2" />
+                    <rect x="102" y="212" width="14" height="7" rx="2" />
+                    <rect x="120" y="212" width="14" height="7" rx="2" />
+                    <rect x="138" y="212" width="14" height="7" rx="2" />
+                    <rect x="156" y="212" width="14" height="7" rx="2" />
+                    <rect x="174" y="212" width="14" height="7" rx="2" />
+                    <rect x="192" y="212" width="26" height="7" rx="2" />
+                  </g>
+                  <rect x="126" y="228" width="68" height="18" rx="4" fill="#9ca3af" opacity="0.55" />
+
+                  <!-- face on screen -->
+                  <path d="M132 108l26-8" stroke="#111827" stroke-width="7" stroke-linecap="round" />
+                  <path d="M188 100l-26 8" stroke="#111827" stroke-width="7" stroke-linecap="round" />
+                  <ellipse cx="144" cy="122" rx="12" ry="10" fill="#fff" />
+                  <ellipse cx="176" cy="122" rx="12" ry="10" fill="#fff" />
+                  <circle cx="147" cy="124" r="4.5" fill="#111827" />
+                  <circle cx="173" cy="124" r="4.5" fill="#111827" />
+                  <rect x="138" y="142" width="44" height="10" rx="5" fill="#111827" />
+
+                  <path d="M120 248c-10 24-14 40-10 52 3 8 14 12 22 7 12-8 18-28 21-49z" fill="#111827" />
+                  <path d="M200 248c10 24 14 40 10 52-3 8-14 12-22 7-12-8-18-28-21-49z" fill="#111827" />
+                </svg>
+              </div>
+
+              <!-- Paper (enemy) -->
+              <div class="fighter paper fighterImg paper" id="paperChar" role="button" aria-label="종이(상대)">
+                <svg class="fighterSvg" viewBox="0 0 320 320" aria-hidden="true">
+                  <ellipse cx="160" cy="300" rx="76" ry="10" fill="rgba(0,0,0,0.22)" />
+                  <path d="M98 48h124c10 0 18 8 18 18v136c0 10-8 18-18 18H98c-10 0-18-8-18-18V66c0-10 8-18 18-18z" fill="#f9fafb" stroke="rgba(17,24,39,0.24)" stroke-width="2" />
+                  <path d="M204 48l36 30v-12c0-10-8-18-18-18z" fill="#e5e7eb" />
+                  <rect x="94" y="84" width="138" height="2" fill="#93c5fd" opacity="0.7" />
+                  <rect x="94" y="102" width="138" height="2" fill="#93c5fd" opacity="0.7" />
+                  <rect x="94" y="120" width="138" height="2" fill="#93c5fd" opacity="0.7" />
+                  <rect x="94" y="138" width="138" height="2" fill="#93c5fd" opacity="0.7" />
+                  <rect x="95" y="49" width="2" height="167" fill="#ef4444" opacity="0.6" />
+                  <path d="M132 108l26-8" stroke="#111827" stroke-width="7" stroke-linecap="round" />
+                  <path d="M188 100l-26 8" stroke="#111827" stroke-width="7" stroke-linecap="round" />
+                  <ellipse cx="144" cy="122" rx="12" ry="10" fill="#fff" />
+                  <ellipse cx="176" cy="122" rx="12" ry="10" fill="#fff" />
+                  <circle cx="147" cy="124" r="4.5" fill="#111827" />
+                  <circle cx="173" cy="124" r="4.5" fill="#111827" />
+                  <rect x="138" y="142" width="44" height="10" rx="5" fill="#111827" />
+                  <path d="M126 220c-12 28-16 48-12 62 3 9 14 13 24 7 14-8 22-34 24-58z" fill="#111827" />
+                  <path d="M194 220c12 28 16 48 12 62-3 9-14 13-24 7-14-8-22-34-24-58z" fill="#111827" />
+                </svg>
+              </div>
+
+              <div class="hitFx" id="hitFx">
+                <svg viewBox="0 0 1000 520" preserveAspectRatio="none" style="width: 100%; height: 100%">
+                  <defs>
+                    <radialGradient id="fxg" cx="50%" cy="60%" r="55%">
+                      <stop offset="0" stop-color="rgba(255,255,255,0.95)" />
+                      <stop offset="0.35" stop-color="rgba(255,255,255,0.4)" />
+                      <stop offset="1" stop-color="rgba(255,255,255,0)" />
+                    </radialGradient>
+                  </defs>
+                  <rect x="0" y="0" width="1000" height="520" fill="url(#fxg)" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stage 2 -->
+      <section class="stageShell hidden" id="stage2">
+        <div class="stageHeader">
+          <div class="stageTitle">
+            <strong>스테이지 2 · 출장자 러너</strong>
+            <span>장애물을 피해 본사까지 도착하세요.</span>
+          </div>
+          <div class="meta">
+            <span class="pill">조작: <span class="kbd">Space</span> 점프 · <span class="kbd">↓</span> 숙이기</span>
+            <button class="btn" id="btnS2Start" type="button">시작</button>
+          </div>
+        </div>
+        <div class="stageBody">
+          <div class="canvasWrap">
+            <canvas id="s2" width="960" height="420"></canvas>
+          </div>
+          <div class="hud2">
+            <div class="hint">장애물에 닿으면 즉시 실패합니다.</div>
+            <div class="hint">목표: 끝까지 버티면 성공</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="modalDim" id="modalDim" aria-hidden="true"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <div style="display: grid; gap: 3px">
+        <b id="toastTitle">알림</b>
+        <span id="toastBody">—</span>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center">
+        <button class="btn secondary" id="toastAlt" type="button">다시</button>
+        <button class="btn" id="toastOk" type="button">다음</button>
+      </div>
+    </div>
+
+    <script>
+      const $ = (sel) => document.querySelector(sel);
+      const clamp01 = (v) => Math.max(0, Math.min(1, v));
+
+      const pillStage = $("#pillStage");
+      const btnRestart = $("#btnRestart");
+      const toast = $("#toast");
+      const modalDim = $("#modalDim");
+      const toastTitle = $("#toastTitle");
+      const toastBody = $("#toastBody");
+      const toastAlt = $("#toastAlt");
+      const toastOk = $("#toastOk");
+
+      const stage1El = $("#stage1");
+      const stage2El = $("#stage2");
+
+      // Stage 1 DOM
+      const btnS1Start = $("#btnS1Start");
+      const s1TimeEl = $("#s1Time");
+      const tugLeft = $("#tugLeft");
+      const tugRight = $("#tugRight");
+      const tugMarker = $("#tugMarker");
+      const laptopChar = $("#laptopChar");
+      const paperChar = $("#paperChar");
+      const hitFx = $("#hitFx");
+
+      // Stage 2 DOM
+      const btnS2Start = $("#btnS2Start");
+      const canvas = $("#s2");
+      const ctx = canvas.getContext("2d");
+
+      const state = {
+        stage: 1,
+        // Stage 1
+        s1: {
+          running: false,
+          durationMs: 15000,
+          leftMs: 15000,
+          pos: 0.5, // 0 = 종이 승리(왼쪽 끝), 1 = 노트북 승리(오른쪽 끝)
+          lastTick: 0,
+          enemyRate: 0.060, // slightly harder
+          enemyBurst: 0,
+          clickPower: 0.023,
+          decay: 0.008,
+          fxUntil: 0,
+        },
+        // Stage 2
+        s2: {
+          running: false,
+          t: 0,
+          lastTs: 0,
+          speed: 300, // harder
+          distance: 0,
+          targetDistance: 3400,
+          hq: null,
+          player: {
+            x: 150,
+            y: 0,
+            vy: 0,
+            w: 54,
+            h: 72,
+            onGround: true,
+            duck: false,
+            inv: 0,
+          },
+          groundY: 340,
+          obstacles: [],
+          nextObstacleIn: 0,
+        },
+      };
+
+      function setStage(n) {
+        state.stage = n;
+        pillStage.textContent = `스테이지 ${n}`;
+        stage1El.classList.toggle("hidden", n !== 1);
+        stage2El.classList.toggle("hidden", n !== 2);
+      }
+
+      function showToast(title, body, okText, altText, onOk, onAlt) {
+        toastTitle.textContent = title;
+        toastBody.textContent = body;
+        toastOk.textContent = okText || "확인";
+        toastAlt.textContent = altText || "다시";
+        toastAlt.style.display = "";
+
+        const okHandler = () => {
+          hideToast();
+          onOk?.();
+        };
+        const altHandler = () => {
+          hideToast();
+          onAlt?.();
+        };
+
+        toastOk.onclick = okHandler;
+        toastAlt.onclick = altHandler;
+        modalDim.classList.add("show");
+        toast.classList.add("show", "modal");
+      }
+
+      function showStartPopup(stageNum, onStart) {
+        toastTitle.textContent = `스테이지 ${stageNum} 시작`;
+        toastBody.textContent = "시작 버튼을 눌러 롯데건설의 디지털 문화 확산에 동참해주세요.";
+        toastOk.textContent = "시작";
+        toastAlt.style.display = "none";
+        toastOk.onclick = () => {
+          hideToast();
+          onStart?.();
+        };
+        toastAlt.onclick = null;
+        modalDim.classList.add("show");
+        toast.classList.add("show", "modal");
+      }
+
+      function hideToast() {
+        toast.classList.remove("show", "modal");
+        modalDim.classList.remove("show");
+        toastAlt.style.display = "";
+        toastOk.onclick = null;
+        toastAlt.onclick = null;
+      }
+
+      // -----------------------
+      // Stage 1: Click Battle
+      // -----------------------
+      function s1Reset() {
+        const s1 = state.s1;
+        s1.running = false;
+        s1.leftMs = s1.durationMs;
+        s1.pos = 0.5;
+        s1.lastTick = 0;
+        s1.enemyBurst = 0;
+        s1.fxUntil = 0;
+        renderS1();
+        s1TimeEl.textContent = Math.ceil(s1.leftMs / 1000);
+      }
+
+      function renderS1() {
+        const p = clamp01(state.s1.pos);
+        // 왼쪽(빨강=나)이 오른쪽으로 밀어가는 형태
+        const leftPct = Math.round(p * 100); // red
+        const rightPct = Math.round((1 - p) * 100); // blue
+        tugLeft.style.width = `${leftPct}%`;
+        tugRight.style.width = `${rightPct}%`;
+        tugMarker.style.left = `${Math.round(p * 100)}%`;
+      }
+
+      function s1Start() {
+        const s1 = state.s1;
+        s1Reset();
+        s1.running = true;
+        s1.lastTick = performance.now();
+        requestAnimationFrame(s1Loop);
+      }
+
+      const S1_WIN_THRESHOLD = 0.99;
+
+      function s1End(forceWin = null) {
+        const s1 = state.s1;
+        s1.running = false;
+        const win = forceWin === null ? s1.pos >= S1_WIN_THRESHOLD : !!forceWin;
+
+        if (win) {
+          showToast(
+            "스테이지 1 성공",
+            "디지털화 성공! 앞으로도 디지털화를 위한 많은 협조 부탁드립니다.",
+            "스테이지 2로",
+            "한 번 더",
+            () => {
+              setStage(2);
+              s2Reset();
+              showStartPopup(2, () => s2Start());
+            },
+            () => s1Start()
+          );
+        } else {
+          showToast(
+            "스테이지 1 실패",
+            "롯데건설의 디지털화를 위해 다시 한번 시도해주세요.",
+            "다시 도전",
+            "처음부터",
+            () => s1Start(),
+            () => {
+              setStage(1);
+              s1Reset();
+            }
+          );
+        }
+      }
+
+      function s1Loop(now) {
+        const s1 = state.s1;
+        if (!s1.running) return;
+
+        const dt = Math.min(0.05, (now - s1.lastTick) / 1000);
+        s1.lastTick = now;
+        s1.leftMs = Math.max(0, s1.leftMs - dt * 1000);
+
+        // 상대(종이)가 왼쪽으로 밀어오는 힘
+        const jitter = 0.75 + Math.random() * 0.6;
+        const burst = s1.enemyBurst > 0 ? 1.35 : 1.0;
+        const enemyPush = s1.enemyRate * jitter * burst * dt;
+        const drift = s1.decay * dt; // 시간이 지날수록 살짝 왼쪽으로 기울어지게(긴장감)
+        s1.pos = clamp01(s1.pos - enemyPush - drift);
+        s1.enemyBurst = Math.max(0, s1.enemyBurst - dt);
+
+        // Time UI + render
+        s1TimeEl.textContent = Math.ceil(s1.leftMs / 1000);
+        renderS1();
+
+        // Hit fx
+        hitFx.classList.toggle("on", now < s1.fxUntil);
+
+        // 승패: 끝까지 닿으면 즉시 종료(한 번만 닿아도 끝)
+        if (s1.pos >= S1_WIN_THRESHOLD) {
+          s1End(true);
+          return;
+        }
+        if (s1.pos <= 0) {
+          s1End(false);
+          return;
+        }
+
+        if (s1.leftMs <= 0) {
+          // 제한시간이 끝나면 점유율(가운데 기준)로 승패
+          s1End(s1.pos > 0.5);
+          return;
+        }
+        requestAnimationFrame(s1Loop);
+      }
+
+      function s1ClickLaptop() {
+        const s1 = state.s1;
+        if (!s1.running) return;
+
+        // 노트북(나)이 오른쪽으로 밀기
+        s1.pos = clamp01(s1.pos + s1.clickPower);
+
+        // Occasional enemy "counter-burst"
+        if (Math.random() < 0.08) s1.enemyBurst = 0.4;
+
+        s1.fxUntil = performance.now() + 120;
+        renderS1();
+      }
+
+      // Prevent dragging SVG
+      [laptopChar, paperChar].forEach((el) => {
+        el.addEventListener("dragstart", (e) => e.preventDefault());
+      });
+
+      laptopChar.addEventListener("pointerdown", () => s1ClickLaptop());
+      // 종이는 클릭해도 아무 동작 없음(규칙 단순화)
+
+      btnS1Start.addEventListener("click", () => s1Start());
+
+      // -----------------------
+      // Stage 2: Pixel Runner
+      // -----------------------
+      function s2Reset() {
+        const s2 = state.s2;
+        s2.running = false;
+        s2.t = 0;
+        s2.lastTs = 0;
+        s2.distance = 0;
+        s2.hq = null;
+        s2.obstacles = [];
+        s2.nextObstacleIn = 0.5;
+        s2.player.y = s2.groundY - s2.player.h;
+        s2.player.vy = 0;
+        s2.player.onGround = true;
+        s2.player.duck = false;
+        drawS2(0);
+      }
+
+      function s2Start() {
+        s2Reset();
+        state.s2.running = true;
+        state.s2.lastTs = performance.now();
+        requestAnimationFrame(s2Loop);
+      }
+
+      function s2Fail() {
+        state.s2.running = false;
+        showToast(
+          "스테이지 2 실패",
+          "본사로 향하는 멀고도 험한 길, 화상 회의를 이용하면 훨씬 편해집니다.",
+          "다시 도전",
+          "스테이지 1로",
+          () => s2Start(),
+          () => {
+            setStage(1);
+            s1Reset();
+            showStartPopup(1, () => s1Start());
+          }
+        );
+      }
+
+      function s2Win() {
+        state.s2.running = false;
+        showToast(
+          "스테이지 2 성공",
+          "먼 길 오시느라 고생 많으셨습니다. 앞으로는 더욱 편한 화상회의를 이용해주세요.",
+          "처음부터",
+          "스테이지 2 다시",
+          () => {
+            setStage(1);
+            s1Reset();
+            showStartPopup(1, () => s1Start());
+          },
+          () => s2Start()
+        );
+      }
+
+      function rectsOverlap(a, b) {
+        return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+      }
+
+      function spawnObstacle() {
+        const s2 = state.s2;
+        const r = Math.random();
+        const type = r < 0.40 ? "pit" : r < 0.74 ? "crate" : "airCrate";
+        const baseY = s2.groundY;
+        if (type === "pit") {
+          s2.obstacles.push({
+            type,
+            x: canvas.width + 40,
+            y: baseY,
+            w: 90 + Math.random() * 70,
+            h: 0,
+          });
+        } else if (type === "airCrate") {
+          // 숙이면 피할 수 있는 공중 장애물(머리 높이)
+          s2.obstacles.push({
+            type,
+            x: canvas.width + 40,
+            y: baseY - 90,
+            w: 72,
+            h: 32,
+          });
+        } else {
+          s2.obstacles.push({
+            type,
+            x: canvas.width + 40,
+            y: baseY - 44,
+            w: 44,
+            h: 44,
+          });
+        }
+      }
+
+      function updateS2(dt) {
+        const s2 = state.s2;
+        s2.t += dt;
+        s2.distance += s2.speed * dt;
+
+        // 본사(HQ) 생성: 목표 지점 근처에서 화면 오른쪽에 등장
+        if (!s2.hq && s2.distance >= s2.targetDistance) {
+          s2.hq = {
+            x: canvas.width + 40,
+            y: s2.groundY - 150,
+            w: 160,
+            h: 150,
+          };
+        }
+
+        // Spawn cadence (easy)
+        s2.nextObstacleIn -= dt;
+        if (s2.nextObstacleIn <= 0) {
+          spawnObstacle();
+          s2.nextObstacleIn = 0.85 + Math.random() * 0.75;
+        }
+
+        // Player physics
+        const p = s2.player;
+        const gravity = 1700;
+        p.vy += gravity * dt;
+        p.y += p.vy * dt;
+        const groundTop = s2.groundY - (p.duck ? 46 : p.h);
+        const pH = p.duck ? 46 : p.h;
+        if (p.y >= groundTop) {
+          p.y = groundTop;
+          p.vy = 0;
+          p.onGround = true;
+        } else {
+          p.onGround = false;
+        }
+
+        // Move obstacles
+        const vx = s2.speed;
+        for (const o of s2.obstacles) o.x -= vx * dt;
+        s2.obstacles = s2.obstacles.filter((o) => o.x > -120);
+
+        if (s2.hq) s2.hq.x -= vx * dt;
+
+        // Collisions
+        const pRect = { x: p.x - 18, y: p.y + (p.duck ? 18 : 0), w: 46, h: pH - (p.duck ? 18 : 0) };
+        // HQ collision => win (본사에 '닿아야' 끝)
+        if (s2.hq && rectsOverlap(pRect, s2.hq)) {
+          s2Win();
+          return;
+        }
+        // Pit collision (구덩이): 바닥에 있을 때 구덩이 범위 위면 즉시 낙사
+        for (const o of s2.obstacles) {
+          if (o.type !== "pit") continue;
+          const footY = p.y + pH;
+          const onGround = Math.abs(footY - s2.groundY) < 2;
+          const px1 = pRect.x + 6;
+          const px2 = pRect.x + pRect.w - 6;
+          const overPit = px2 > o.x && px1 < o.x + o.w;
+          if (onGround && overPit) {
+            s2Fail();
+            return;
+          }
+        }
+        for (const o of s2.obstacles) {
+          if (o.type === "pit") continue;
+          if (rectsOverlap(pRect, o)) {
+            s2Fail();
+            return;
+          }
+        }
+      }
+
+      function pxRect(x, y, w, h, c) {
+        ctx.fillStyle = c;
+        ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+      }
+
+      function drawPixelBackground(t) {
+        // Sky
+        ctx.imageSmoothingEnabled = false;
+        pxRect(0, 0, canvas.width, canvas.height, "#bfe9ff");
+
+        // Parallax clouds
+        const c1x = (canvas.width - ((t * 22) % (canvas.width + 260))) - 120;
+        const c2x = (canvas.width - ((t * 34) % (canvas.width + 320))) - 160;
+        drawCloud(c1x, 68, 1.2);
+        drawCloud(c2x, 112, 0.95);
+
+        // Far hills
+        drawHills(t);
+
+        // Ground
+        pxRect(0, state.s2.groundY, canvas.width, canvas.height - state.s2.groundY, "#4b5563");
+        // Grass top
+        pxRect(0, state.s2.groundY - 10, canvas.width, 10, "#22c55e");
+
+        // Pixel noise
+        ctx.globalAlpha = 0.07;
+        for (let i = 0; i < 420; i++) {
+          const x = (Math.random() * canvas.width) | 0;
+          const y = (Math.random() * canvas.height) | 0;
+          pxRect(x, y, 2, 2, "#111827");
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function drawCloud(x, y, s) {
+        ctx.globalAlpha = 0.92;
+        pxRect(x + 0 * s, y + 8 * s, 40 * s, 18 * s, "#f9fafb");
+        pxRect(x + 24 * s, y + 0 * s, 52 * s, 22 * s, "#f9fafb");
+        pxRect(x + 64 * s, y + 8 * s, 42 * s, 18 * s, "#f9fafb");
+        pxRect(x + 16 * s, y + 18 * s, 74 * s, 18 * s, "#f9fafb");
+        ctx.globalAlpha = 1;
+      }
+
+      function drawHills(t) {
+        const base = state.s2.groundY;
+        const offset = ((t * 18) % 240) | 0;
+        ctx.globalAlpha = 0.95;
+        for (let i = -1; i < 6; i++) {
+          const x = i * 240 - offset;
+          pxRect(x + 0, base - 100, 240, 100, "#60a5fa");
+          // hill bump
+          pxRect(x + 44, base - 130, 160, 30, "#60a5fa");
+          pxRect(x + 70, base - 150, 110, 20, "#60a5fa");
+          // darker layer
+          pxRect(x + 0, base - 70, 240, 70, "#3b82f6");
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // Pixel-style businessman runner
+      function drawRunner(x, y, duck, step) {
+        const s = 3; // pixel scale
+        const baseX = Math.round(x);
+        const baseY = Math.round(y);
+
+        // Shadow
+        ctx.globalAlpha = 0.22;
+        pxRect(baseX - 8, state.s2.groundY + 6, 44, 8, "#111827");
+        ctx.globalAlpha = 1;
+
+        // Body sizes
+        const headW = 10 * s;
+        const headH = 10 * s;
+        const bodyW = 12 * s;
+        const bodyH = duck ? 12 * s : 16 * s;
+        const legH = duck ? 6 * s : 10 * s;
+        const armH = 8 * s;
+
+        const bob = duck ? 0 : Math.sin(step * 6) * 2;
+        const top = baseY + (duck ? 18 : 0) + bob;
+
+        // Suit
+        pxRect(baseX, top + headH, bodyW, bodyH, "#1f2937");
+        // Shirt + tie
+        pxRect(baseX + 4 * s, top + headH + 4 * s, 4 * s, 6 * s, "#f9fafb");
+        pxRect(baseX + 6 * s, top + headH + 4 * s, 2 * s, 8 * s, "#2563eb");
+
+        // Head
+        pxRect(baseX + 1 * s, top, headW, headH, "#f1c27d");
+        // Hair
+        pxRect(baseX + 1 * s, top, headW, 4 * s, "#111827");
+        // Eye
+        pxRect(baseX + 6 * s, top + 5 * s, 2 * s, 2 * s, "#111827");
+
+        // Arms
+        const armSwing = duck ? 0 : Math.sin(step * 6) * 3;
+        pxRect(baseX - 3 * s, top + headH + 5 * s + armSwing, 3 * s, armH, "#111827");
+        pxRect(baseX + bodyW, top + headH + 5 * s - armSwing, 3 * s, armH, "#111827");
+        // Hands
+        pxRect(baseX - 3 * s, top + headH + 5 * s + armH + armSwing, 3 * s, 3 * s, "#f1c27d");
+        pxRect(baseX + bodyW, top + headH + 5 * s + armH - armSwing, 3 * s, 3 * s, "#f1c27d");
+
+        // Briefcase
+        pxRect(baseX - 10 * s, top + headH + bodyH + 2 * s, 7 * s, 5 * s, "#111827");
+        pxRect(baseX - 9 * s, top + headH + bodyH + 1 * s, 5 * s, 1 * s, "#374151");
+
+        // Legs
+        const legSwing = duck ? 0 : Math.sin(step * 6) * 4;
+        pxRect(baseX + 2 * s, top + headH + bodyH, 3 * s, legH + legSwing, "#111827");
+        pxRect(baseX + 7 * s, top + headH + bodyH, 3 * s, legH - legSwing, "#111827");
+        // Shoes
+        pxRect(baseX + 1 * s, top + headH + bodyH + legH + legSwing, 5 * s, 3 * s, "#0b1020");
+        pxRect(baseX + 6 * s, top + headH + bodyH + legH - legSwing, 6 * s, 3 * s, "#0b1020");
+      }
+
+      function drawObstacle(o) {
+        if (o.type === "pit") {
+          // 구덩이(더 '파인' 느낌): 잔디 테두리 + 흙벽 + 깊이 그림자 + 바닥 질감
+          const gy = state.s2.groundY;
+          const x = o.x;
+          const w = o.w;
+          const lipH = 10;
+          const wallH = 26;
+          const depthH = 44;
+
+          // 잔디가 끊긴 테두리(윗면)
+          pxRect(x - 2, gy - 10, w + 4, lipH, "#16a34a");
+          ctx.globalAlpha = 0.25;
+          pxRect(x - 2, gy - 12, w + 4, 3, "#86efac");
+          ctx.globalAlpha = 1;
+
+          // 구덩이 입구(검은 틈)
+          pxRect(x, gy - 2, w, 12, "#0b1020");
+
+          // 흙벽(안쪽)
+          pxRect(x + 2, gy + 8, w - 4, wallH, "#3f2a1a");
+          pxRect(x + 4, gy + 12, w - 8, wallH - 8, "#2a1a12");
+
+          // 더 깊은 부분(그림자)
+          pxRect(x + 1, gy + 8 + wallH, w - 2, depthH, "#080b14");
+          ctx.globalAlpha = 0.35;
+          pxRect(x + 3, gy + 10 + wallH, w - 6, 10, "#111827");
+          ctx.globalAlpha = 1;
+
+          // 바닥 질감(돌/흙 픽셀)
+          for (let i = 0; i < 12; i++) {
+            const rx = x + 6 + ((i * 23) % Math.max(8, w - 12));
+            const ry = gy + 18 + wallH + ((i * 11) % 28);
+            pxRect(rx, ry, 4, 3, i % 3 === 0 ? "#374151" : "#1f2937");
+          }
+
+          // 양쪽 가장자리(낙차 느낌)
+          pxRect(x - 6, gy - 6, 6, 18, "#0b1020");
+          pxRect(x + w, gy - 6, 6, 18, "#0b1020");
+        } else if (o.type === "airCrate") {
+          // 공중 박스(숙이면 통과)
+          pxRect(o.x, o.y, o.w, o.h, "#7c2d12");
+          pxRect(o.x + 4, o.y + 4, o.w - 8, o.h - 8, "#9a3412");
+          pxRect(o.x + 10, o.y + 8, o.w - 20, 6, "#f59e0b");
+          ctx.globalAlpha = 0.55;
+          pxRect(o.x + 8, o.y + o.h + 6, o.w - 16, 3, "#111827");
+          ctx.globalAlpha = 1;
+        } else {
+          // crate
+          pxRect(o.x, o.y, o.w, o.h, "#92400e");
+          pxRect(o.x + 4, o.y + 4, o.w - 8, o.h - 8, "#b45309");
+          pxRect(o.x + 8, o.y + 8, o.w - 16, o.h - 16, "#d97706");
+        }
+      }
+
+      function drawHQ(hq) {
+        // 누런색 본사 건물 (픽셀 느낌)
+        const x = hq.x;
+        const y = hq.y;
+        const w = hq.w;
+        const h = hq.h;
+
+        // main building
+        pxRect(x, y, w, h, "#f2c94c"); // yellow-ish
+        pxRect(x + 6, y + 6, w - 12, h - 12, "#eab308"); // inner
+        // roof
+        pxRect(x - 8, y - 18, w + 16, 18, "#c0841a");
+        pxRect(x - 4, y - 14, w + 8, 10, "#d97706");
+
+        // windows grid
+        const cols = 5;
+        const rows = 6;
+        const padX = 14;
+        const padY = 24;
+        const gapX = 10;
+        const gapY = 12;
+        const winW = Math.floor((w - padX * 2 - gapX * (cols - 1)) / cols);
+        const winH = 14;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const wx = x + padX + c * (winW + gapX);
+            const wy = y + padY + r * (winH + gapY);
+            pxRect(wx, wy, winW, winH, "#1f2937");
+            pxRect(wx + 2, wy + 2, winW - 4, winH - 4, r % 2 === 0 ? "#fde68a" : "#93c5fd");
+          }
+        }
+
+        // entrance
+        pxRect(x + w / 2 - 18, y + h - 50, 36, 50, "#92400e");
+        pxRect(x + w / 2 - 12, y + h - 44, 24, 44, "#78350f");
+        pxRect(x + w / 2 - 3, y + h - 28, 6, 10, "#e5e7eb");
+      }
+
+      function drawS2(t) {
+        drawPixelBackground(t);
+
+        const s2 = state.s2;
+
+        // Obstacles
+        for (const o of s2.obstacles) drawObstacle(o);
+
+        // HQ (finish) - must touch to win
+        if (s2.hq) drawHQ(s2.hq);
+
+        // Runner
+        const p = s2.player;
+        drawRunner(p.x, p.y, p.duck, t);
+
+        // 기존 깃발(마커) 제거: 본사에 닿아야 종료
+      }
+
+      function s2Loop(ts) {
+        const s2 = state.s2;
+        if (!s2.running) return;
+        const dt = Math.min(0.05, (ts - s2.lastTs) / 1000);
+        s2.lastTs = ts;
+        updateS2(dt);
+        drawS2(s2.t);
+        if (s2.running) requestAnimationFrame(s2Loop);
+      }
+
+      function jump() {
+        const p = state.s2.player;
+        if (!state.s2.running) return;
+        if (!p.onGround) return;
+        p.vy = -720;
+        p.onGround = false;
+      }
+
+      function setDuck(on) {
+        if (!state.s2.running) return;
+        state.s2.player.duck = on;
+      }
+
+      window.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          e.preventDefault();
+          jump();
+        }
+        if (e.code === "ArrowDown") {
+          e.preventDefault();
+          setDuck(true);
+        }
+      });
+      window.addEventListener("keyup", (e) => {
+        if (e.code === "ArrowDown") {
+          e.preventDefault();
+          setDuck(false);
+        }
+      });
+
+      btnS2Start.addEventListener("click", () => s2Start());
+
+      // Restart
+      btnRestart.addEventListener("click", () => {
+        hideToast();
+        setStage(1);
+        s1Reset();
+        showStartPopup(1, () => s1Start());
+      });
+
+      // Init
+      setStage(1);
+      s1Reset();
+      s2Reset();
+      btnS1Start.classList.add("hidden");
+      btnS2Start.classList.add("hidden");
+      showStartPopup(1, () => s1Start());
+
+      // Friendly nudge if user clicks arena before start
+      laptopChar.addEventListener("click", () => {
+        if (!state.s1.running) {
+          // Don't block; just hint subtly by flashing bar
+          tugRight.style.filter = "brightness(1.12)";
+          setTimeout(() => (tugRight.style.filter = ""), 150);
+        }
+      });
+    </script>
+  </body>
+</html>
